@@ -1,0 +1,45 @@
+volumes:
+  elastic-data:
+    driver: local
+  postgres-data:
+    driver: local
+
+services:
+  postgresql:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-products}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  elasticsearch:
+    image: elasticsearch:latest
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - 9200:9200
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+
+  products-service:
+    build:
+      context: .
+    environment:
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      - DB_NAME=${DB_NAME:-products}
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - ELASTIC_HOST=elasticsearch
+      - ELASTIC_PORT=9200
+    depends_on:
+      - postgresql
+      - elasticsearch
+    ports:
+      - 8080:8080
