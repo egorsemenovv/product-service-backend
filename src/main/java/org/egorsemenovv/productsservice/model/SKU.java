@@ -35,4 +35,8 @@ public class SKU {
 
     @Column(nullable = false)
     private LocalDate updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 }
