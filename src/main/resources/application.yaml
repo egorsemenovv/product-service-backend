@@ -16,5 +16,8 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
+server:
+  port: 8080
+
 elasticsearch:
   url: http://${ELASTIC_HOST}:${ELASTIC_PORT}
