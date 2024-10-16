@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Table(name = "products")
 public class Product {
 
