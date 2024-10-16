@@ -2,9 +2,11 @@ package org.egorsemenovv.productsservice.config;
 
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.indices.CreateIndexRequest;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpHost;
 import org.egorsemenovv.productsservice.properties.ElasticSearchProperties;
@@ -21,7 +23,7 @@ public class ElasticSearchConfig {
     private final ElasticSearchProperties esProperties;
 
     @Bean
-    public ElasticsearchClient esClient() throws IOException {
+    public ElasticsearchClient esClient() {
         RestClient restClient = RestClient
                 .builder(HttpHost.create(esProperties.getUrl()))
                 .build();
@@ -29,10 +31,7 @@ public class ElasticSearchConfig {
         ElasticsearchTransport transport = new RestClientTransport(
                 restClient, new JacksonJsonpMapper());
 
-        ElasticsearchClient esClient = new ElasticsearchClient(transport);
-
-        transport.close();
-        return esClient;
+        return new ElasticsearchClient(transport);
     }
 
 }
