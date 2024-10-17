@@ -20,7 +20,7 @@ public class ElasticSearchIndexCreator {
     private final ElasticsearchClient esClient;
 
     @PostConstruct
-    public void createIndex(){
+    public void createIndex() {
         String indexName = "products_skus_index";
 
         try {
@@ -38,23 +38,21 @@ public class ElasticSearchIndexCreator {
                                 .properties("price", price -> price.double_(number -> number))
                                 .properties("active", active -> active.boolean_(bool -> bool))
                                 .properties("startDate", stDate -> stDate.date(date -> date))
-                                .properties("skus", v -> v.nested( n -> n
-                                        .properties("code", code -> code.text(text -> text))
-                                        .properties("stock", stock -> stock.long_(number -> number))
-                                        .properties("color", color -> color.text(text -> text))
-                                ))
+                                .properties("skuCode", code -> code.text(text -> text))
+                                .properties("stock", stock -> stock.long_(number -> number))
+                                .properties("color", color -> color.text(text -> text))
                         ))
                         .build();
 
                 CreateIndexResponse response = esClient.indices().create(request);
 
-                if(response.acknowledged()){
+                if (response.acknowledged()) {
                     log.info("Index '{}' created successfully", indexName);
                 } else {
                     throw new RuntimeException("Index creation failed for '" + indexName + "'");
                 }
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             log.error("Failed to create index '{}'", indexName);
             throw new RuntimeException("Index creation failed for '" + indexName + "'");
         }
