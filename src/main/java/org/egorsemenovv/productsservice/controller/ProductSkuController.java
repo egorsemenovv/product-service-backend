@@ -29,12 +29,6 @@ public class ProductSkuController {
                             "id", productId));
     }
 
-    @DeleteMapping("/product/{id}")
-    public ResponseEntity<Object> deleteProductById(@PathVariable Long id){
-        productSkuService.deleteProductById(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/sku/{id}")
     public ResponseEntity<Object> createProductSku(@PathVariable Long id, @Validated SkuCreateEditDto skuCreateEditDto) {
         String skuCode = productSkuService.createSku(skuCreateEditDto, id);

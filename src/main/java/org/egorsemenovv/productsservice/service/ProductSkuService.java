@@ -30,12 +30,6 @@ public class ProductSkuService {
         return product.getId();
     }
 
-    public void deleteProductById(Long productId){
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        productRepository.delete(product);
-    }
-
     public String createSku(SkuCreateEditDto skuCreateEditDto, Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
