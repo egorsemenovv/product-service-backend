@@ -19,8 +19,8 @@ public class EnumValidator implements ConstraintValidator<ValidEnum, String> {
         if (value == null) {
             return true; // should be used with @NotNull
         }
-        value = value.toUpperCase();
+        final String finalValue = value.toUpperCase();
         return Arrays.stream(enumClass.getEnumConstants())
-                .anyMatch(e -> e.name().equals(value));
+                .anyMatch(e -> e.name().equals(finalValue));
     }
 }
