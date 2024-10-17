@@ -27,6 +27,11 @@ services:
       - 9300:9300
     volumes:
       - elastic-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9200" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   products-service:
     build:
@@ -40,7 +45,9 @@ services:
       - ELASTIC_HOST=elasticsearch
       - ELASTIC_PORT=9200
     depends_on:
-      - postgresql
-      - elasticsearch
+      postgresql:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
     ports:
       - 8080:8080
