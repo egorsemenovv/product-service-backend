@@ -22,7 +22,6 @@ public class ElasticSearchIndexCreator {
     @PostConstruct
     public void createIndex() {
         String indexName = "products_skus_index";
-
         try {
             boolean exists = indexExists(indexName);
             if (!exists) {
@@ -51,6 +50,9 @@ public class ElasticSearchIndexCreator {
                 } else {
                     throw new RuntimeException("Index creation failed for '" + indexName + "'");
                 }
+            }
+            else {
+                log.info("Index '{}' already exists", indexName);
             }
         } catch (IOException e) {
             log.error("Failed to create index '{}'", indexName);
