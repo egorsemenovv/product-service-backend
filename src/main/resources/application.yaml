@@ -16,6 +16,10 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
+  mvc:
+    format:
+      date: iso
+
 server:
   port: 8080
 
