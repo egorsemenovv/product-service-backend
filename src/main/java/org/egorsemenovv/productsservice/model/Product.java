@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -39,4 +41,10 @@ public class Product {
     @Column(nullable = false)
     private LocalDate updatedAt;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = false)
+    @Builder.Default
+    private Set<Sku> skus = new HashSet<>();
+
+    @Column(nullable = false)
+    private Boolean loaded;
 }

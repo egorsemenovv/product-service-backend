@@ -1,5 +1,6 @@
 package org.egorsemenovv.productsservice.controller;
 
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.egorsemenovv.productsservice.dto.ProductCreateEditDto;
 import org.egorsemenovv.productsservice.dto.SkuCreateEditDto;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 @RestController("/api/v1")
@@ -37,5 +39,15 @@ public class ProductSkuController {
                 .body(Map.of("skuCode", skuCode,
                             "message", "sku was created successfully"));
     }
+
+    @PostMapping("/load")
+    public ResponseEntity<Object> loadProductsFromDb(@PathParam("active") Boolean active, @PathParam("startDate")LocalDate startDate){
+        int numberOfProducts = productSkuService.loadProductsSkuToElastic();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("message", "products was successfully loaded from db",
+                        "products load number", numberOfProducts));
+    }
+
 
 }

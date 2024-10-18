@@ -32,14 +32,17 @@ public class ElasticSearchIndexCreator {
                                 .numberOfReplicas("1")
                                 .build())
                         .mappings(TypeMapping.of(fn -> fn
+                                .properties("productId", id -> id.keyword(keyword -> keyword))
                                 .properties("name", name -> name.text(text -> text))
                                 .properties("description", desc -> desc.text(text -> text))
                                 .properties("price", price -> price.double_(number -> number))
                                 .properties("active", active -> active.boolean_(bool -> bool))
                                 .properties("startDate", stDate -> stDate.date(date -> date))
-                                .properties("skuCode", code -> code.text(text -> text))
-                                .properties("stock", stock -> stock.long_(number -> number))
-                                .properties("color", color -> color.text(text -> text))
+                                .properties("skus", skus -> skus.nested(n -> n
+                                        .properties("skuCode", code -> code.keyword(keyword -> keyword))
+                                        .properties("stock", stock -> stock.long_(number -> number))
+                                        .properties("color", color -> color.text(text -> text))
+                                ))
                         ))
                         .build();
 
@@ -50,8 +53,7 @@ public class ElasticSearchIndexCreator {
                 } else {
                     throw new RuntimeException("Index creation failed for '" + indexName + "'");
                 }
-            }
-            else {
+            } else {
                 log.info("Index '{}' already exists", indexName);
             }
         } catch (IOException e) {

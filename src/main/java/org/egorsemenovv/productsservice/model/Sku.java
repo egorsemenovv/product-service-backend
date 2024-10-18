@@ -8,6 +8,8 @@ import java.time.LocalDate;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"code"})
+@ToString(exclude = {"product"})
 @Getter
 @Setter
 @Builder
