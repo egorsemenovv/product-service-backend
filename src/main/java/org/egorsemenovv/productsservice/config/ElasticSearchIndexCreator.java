@@ -32,17 +32,15 @@ public class ElasticSearchIndexCreator {
                                 .numberOfReplicas("1")
                                 .build())
                         .mappings(TypeMapping.of(fn -> fn
-                                .properties("productId", id -> id.keyword(keyword -> keyword))
+                                .properties("id", id -> id.keyword(keyword -> keyword))
                                 .properties("name", name -> name.text(text -> text))
                                 .properties("description", desc -> desc.text(text -> text))
                                 .properties("price", price -> price.double_(number -> number))
                                 .properties("active", active -> active.boolean_(bool -> bool))
                                 .properties("startDate", stDate -> stDate.date(date -> date))
-                                .properties("skus", skus -> skus.nested(n -> n
-                                        .properties("skuCode", code -> code.keyword(keyword -> keyword))
-                                        .properties("stock", stock -> stock.long_(number -> number))
-                                        .properties("color", color -> color.text(text -> text))
-                                ))
+                                .properties("code", code -> code.keyword(keyword -> keyword))
+                                .properties("stock", stock -> stock.long_(number -> number))
+                                .properties("color", color -> color.text(text -> text))
                         ))
                         .build();
 

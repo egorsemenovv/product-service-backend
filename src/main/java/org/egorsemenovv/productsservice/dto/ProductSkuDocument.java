@@ -7,20 +7,21 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Builder
-public class ProductDocument {
+public class ProductSkuDocument {
 
-    private Long productId;
-    private String productName;
+    private Long id;
+    private String name;
     private String description;
     private Double price;
-    private Boolean isActive;
+    private Boolean active;
     @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate startDate;
-    List<SkuDocument> skus;
+    private String code;
+    private Integer stock;
+    private String color;
 
 }

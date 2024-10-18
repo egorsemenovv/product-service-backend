@@ -8,9 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.egorsemenovv.productsservice.dto.ProductCreateEditDto;
-import org.egorsemenovv.productsservice.dto.ProductDocument;
+import org.egorsemenovv.productsservice.dto.ProductSkuDocument;
 import org.egorsemenovv.productsservice.dto.SkuCreateEditDto;
-import org.egorsemenovv.productsservice.dto.SkuDocument;
 import org.egorsemenovv.productsservice.mapper.ProductCreateEditMapper;
 import org.egorsemenovv.productsservice.mapper.SkuCreateEditMapper;
 import org.egorsemenovv.productsservice.model.Product;
@@ -55,46 +54,44 @@ public class ProductSkuService {
         return sku.getCode();
     }
 
-    public int loadProductsSkuToElastic() {
-        int numberOfLoadedProducts = 0;
-        int page = 0;
-        int size = 20;
-        Page<Product> productPage;
+    public int loadProductsSkuToElastic(Boolean active, LocalDate startDate) {
+        int numberOfLoadedSkus = 0;
+        int pageNumber = 0;
+        int pageSize = 20;
+        Page<Sku> skuPage;
+
         do {
-            Pageable pageable = PageRequest.of(page, size);
-            productPage = productRepository.findUnloadedProductByFilter(true, LocalDate.now(), pageable);
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
+            skuPage = skuRepository.findUnloadedSkuByFilter(active, startDate, pageable);
 
-            List<Product> products = productPage.getContent();
-            numberOfLoadedProducts += products.size();
+            List<Sku> skus = skuPage.getContent();
+            numberOfLoadedSkus += skus.size();
 
-            List<ProductDocument> productDocuments = products.stream()
-                    .map(this::createProductDocument).toList();
+            List<ProductSkuDocument> productSkuDocuments = skus.stream()
+                    .map(this::createProductSkuDocument).toList();
 
             try {
-                loadToElastic(productDocuments);
+                loadToElastic(productSkuDocuments);
             } catch (IOException e) {
-                log.error("failed load data to elastic for products {}", productDocuments);
+                log.error("failed load data to elastic for products {}", productSkuDocuments);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            log.error("{}", skuPage);
+            skuRepository.updateLoadedStatusForSku(skus.stream().map(Sku::getId).toList(), true);
 
-            productRepository.updateLoadedStatusForProduct(productPage.stream().map(Product::getId).toList(), true);
+        } while (skuPage.hasNext());
 
-            page++;
-
-        } while (productPage.hasNext());
-
-        return numberOfLoadedProducts;
+        return numberOfLoadedSkus;
     }
 
-    private void loadToElastic(List<ProductDocument> documents) throws IOException {
+    private void loadToElastic(List<ProductSkuDocument> documents) throws IOException {
         if (documents.isEmpty()) {
             return;
         }
         BulkRequest.Builder bulkRequestBuilder = new BulkRequest.Builder();
-        for (ProductDocument document : documents) {
+        for (ProductSkuDocument document : documents) {
             bulkRequestBuilder.operations(op -> op.index(idx -> idx
                     .index("products_skus_index")
-                    .id(String.valueOf(idx))
                     .document(document)
             ));
         }
@@ -111,24 +108,18 @@ public class ProductSkuService {
         }
     }
 
-    private ProductDocument createProductDocument(Product product) {
-        List<SkuDocument> skus = product.getSkus().stream().map(this::createSkuDocument).toList();
-        return ProductDocument.builder()
-                .productId(product.getId())
-                .productName(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice().doubleValue())
-                .isActive(product.getActive())
-                .startDate(product.getStartDate())
-                .skus(skus)
-                .build();
-    }
-
-    private SkuDocument createSkuDocument(Sku sku) {
-        return SkuDocument.builder()
+    private ProductSkuDocument createProductSkuDocument(Sku sku) {
+        return ProductSkuDocument.builder()
+                .id(sku.getProduct().getId())
+                .name(sku.getProduct().getName())
+                .description(sku.getProduct().getDescription())
+                .price(sku.getProduct().getPrice().doubleValue())
+                .active(sku.getProduct().getActive())
+                .startDate(sku.getProduct().getStartDate())
                 .code(sku.getCode())
                 .color(sku.getColor().name())
                 .stock(sku.getStock())
                 .build();
     }
+
 }

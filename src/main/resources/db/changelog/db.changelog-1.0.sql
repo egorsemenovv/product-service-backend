@@ -25,7 +25,7 @@ CREATE TABLE skus
 );
 
 --changeset egorsemenovv:2
-ALTER TABLE products
+ALTER TABLE skus
     ADD COLUMN loaded BOOLEAN NOT NULL DEFAULT FALSE;
 
 --changeset egorsemenovv:3

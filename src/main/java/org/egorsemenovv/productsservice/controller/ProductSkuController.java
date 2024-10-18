@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Map;
 
-@RestController("/api/v1")
+@RestController
 @RequiredArgsConstructor
 @Validated
+@RequestMapping("/api/v1")
 public class ProductSkuController {
 
 
@@ -36,17 +37,17 @@ public class ProductSkuController {
         String skuCode = productSkuService.createSku(skuCreateEditDto, id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("skuCode", skuCode,
+                .body(Map.of("sku code", skuCode,
                             "message", "sku was created successfully"));
     }
 
     @PostMapping("/load")
     public ResponseEntity<Object> loadProductsFromDb(@PathParam("active") Boolean active, @PathParam("startDate")LocalDate startDate){
-        int numberOfProducts = productSkuService.loadProductsSkuToElastic();
+        int numberOfProductsWithSku = productSkuService.loadProductsSkuToElastic(active, startDate);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("message", "products was successfully loaded from db",
-                        "products load number", numberOfProducts));
+                        "load amount", numberOfProductsWithSku));
     }
 
 
