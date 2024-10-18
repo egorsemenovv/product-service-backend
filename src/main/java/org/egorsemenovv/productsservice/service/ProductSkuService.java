@@ -76,7 +76,7 @@ public class ProductSkuService {
                 log.error("failed load data to elastic for products {}", productSkuDocuments);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            log.error("{}", skuPage);
+
             skuRepository.updateLoadedStatusForSku(skus.stream().map(Sku::getId).toList(), true);
 
         } while (skuPage.hasNext());
