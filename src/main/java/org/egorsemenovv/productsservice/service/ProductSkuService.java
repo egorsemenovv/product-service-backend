@@ -57,7 +57,7 @@ public class ProductSkuService {
     public int loadProductsSkuToElastic(Boolean active, LocalDate startDate) {
         int numberOfLoadedSkus = 0;
         int pageNumber = 0;
-        int pageSize = 20;
+        int pageSize = 100;
         Page<Sku> skuPage;
 
         do {
@@ -110,12 +110,13 @@ public class ProductSkuService {
 
     private ProductSkuDocument createProductSkuDocument(Sku sku) {
         return ProductSkuDocument.builder()
-                .id(sku.getProduct().getId())
+                .productId(sku.getProduct().getId())
                 .name(sku.getProduct().getName())
                 .description(sku.getProduct().getDescription())
                 .price(sku.getProduct().getPrice().doubleValue())
                 .active(sku.getProduct().getActive())
                 .startDate(sku.getProduct().getStartDate())
+                .skuId(sku.getId())
                 .code(sku.getCode())
                 .color(sku.getColor().name())
                 .stock(sku.getStock())
