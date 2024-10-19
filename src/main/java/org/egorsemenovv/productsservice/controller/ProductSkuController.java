@@ -1,5 +1,6 @@
 package org.egorsemenovv.productsservice.controller;
 
+import jakarta.validation.constraints.Min;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.egorsemenovv.productsservice.dto.ProductCreateEditDto;
@@ -33,7 +34,7 @@ public class ProductSkuController {
     }
 
     @PostMapping("/sku/{id}")
-    public ResponseEntity<Object> createProductSku(@PathVariable Long id, @Validated SkuCreateEditDto skuCreateEditDto) {
+    public ResponseEntity<Object> createProductSku(@PathVariable @Min(1) Long id, @RequestBody @Validated SkuCreateEditDto skuCreateEditDto) {
         String skuCode = productSkuService.createSku(skuCreateEditDto, id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)

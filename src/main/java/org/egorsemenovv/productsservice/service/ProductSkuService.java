@@ -47,7 +47,7 @@ public class ProductSkuService {
 
     public String createSku(SkuCreateEditDto skuCreateEditDto, Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "no such product"));
         Sku sku = skuCreateEditMapper.map(skuCreateEditDto);
         sku.setProduct(product);
         skuRepository.saveAndFlush(sku);
@@ -74,7 +74,7 @@ public class ProductSkuService {
                 loadToElastic(productSkuDocuments);
             } catch (IOException e) {
                 log.error("failed load data to elastic for products {}", productSkuDocuments);
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "failed to connect to elastic");
             }
 
             skuRepository.updateLoadedStatusForSku(skus.stream().map(Sku::getId).toList(), true);

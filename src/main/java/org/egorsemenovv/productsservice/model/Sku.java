@@ -41,5 +41,6 @@ public class Sku {
     private Product product;
 
     @Column(nullable = false)
-    private Boolean loaded;
+    @Builder.Default
+    private Boolean loaded = false;
 }

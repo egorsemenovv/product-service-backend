@@ -8,13 +8,6 @@ import org.egorsemenovv.productsservice.validator.ValidEnum;
 @Getter
 public class SkuCreateEditDto {
 
-    @NotNull
-    @Min(1)
-    private Long productId;
-
-    @Size(min = 1, max = 64)
-    private String code;
-
     @ValidEnum(enumClass = Color.class)
     @NotNull
     @Size(min = 1, max = 32)
