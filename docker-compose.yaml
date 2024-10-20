@@ -19,6 +19,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:8.15.2
+    restart: always
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
@@ -36,6 +37,7 @@ services:
   products-service:
     build:
       context: .
+    restart: always
     environment:
       - DB_USER=${DB_USER:-postgres}
       - DB_PASSWORD=${DB_PASSWORD:-password}
