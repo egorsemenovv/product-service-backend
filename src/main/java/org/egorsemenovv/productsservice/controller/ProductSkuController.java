@@ -1,8 +1,8 @@
 package org.egorsemenovv.productsservice.controller;
 
 import jakarta.validation.constraints.Min;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.egorsemenovv.productsservice.dto.LoadFromDbToElasticDto;
 import org.egorsemenovv.productsservice.dto.ProductCreateEditDto;
 import org.egorsemenovv.productsservice.dto.SkuCreateEditDto;
 import org.egorsemenovv.productsservice.service.ProductSkuService;
@@ -11,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -43,8 +41,8 @@ public class ProductSkuController {
     }
 
     @PostMapping("/load")
-    public ResponseEntity<Object> loadProductsFromDb(@PathParam("active") Boolean active, @PathParam("startDate")LocalDate startDate){
-        int numberOfProductsWithSku = productSkuService.loadProductsSkuToElastic(active, startDate);
+    public ResponseEntity<Object> loadProductsFromDb(@RequestBody @Validated LoadFromDbToElasticDto loadFromDbToElasticDto){
+        int numberOfProductsWithSku = productSkuService.loadProductsSkuToElastic(loadFromDbToElasticDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("message", "products was successfully loaded from db",

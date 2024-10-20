@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch.core.bulk.BulkResponseItem;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.egorsemenovv.productsservice.dto.LoadFromDbToElasticDto;
 import org.egorsemenovv.productsservice.dto.ProductCreateEditDto;
 import org.egorsemenovv.productsservice.dto.ProductSkuDocument;
 import org.egorsemenovv.productsservice.dto.SkuCreateEditDto;
@@ -54,7 +55,9 @@ public class ProductSkuService {
         return sku.getCode();
     }
 
-    public int loadProductsSkuToElastic(Boolean active, LocalDate startDate) {
+    public int loadProductsSkuToElastic(LoadFromDbToElasticDto loadFromDbToElasticDto) {
+        Boolean active = loadFromDbToElasticDto.getActive();
+        LocalDate startDate = loadFromDbToElasticDto.getStartDate();
         int numberOfLoadedSkus = 0;
         int pageNumber = 0;
         int pageSize = 100;
