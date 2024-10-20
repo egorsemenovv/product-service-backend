@@ -32,7 +32,9 @@ public class SearchService {
             MultiMatchQuery multiMatchQuery = MultiMatchQuery.of(fn -> fn
                     .fields(List.of("name^3", "description^2", "color", "code"))
                     .query(keyword)
-                    .type(TextQueryType.BestFields));
+                    .type(TextQueryType.BestFields)
+                    .operator(Operator.And)
+                    .fuzziness("auto"));
             SearchRequest searchRequest = SearchRequest.of(fn -> fn
                     .index(indexName)
                     .query(q -> q.multiMatch(multiMatchQuery)));
