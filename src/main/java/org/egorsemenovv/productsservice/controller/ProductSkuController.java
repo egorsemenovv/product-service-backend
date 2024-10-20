@@ -48,7 +48,7 @@ public class ProductSkuController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("message", "products was successfully loaded from db",
-                        "load amount", numberOfProductsWithSku));
+                        "loadAmount", numberOfProductsWithSku));
     }
 
 
