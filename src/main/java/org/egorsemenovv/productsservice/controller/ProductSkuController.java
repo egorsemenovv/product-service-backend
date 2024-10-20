@@ -38,7 +38,7 @@ public class ProductSkuController {
         String skuCode = productSkuService.createSku(skuCreateEditDto, id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("sku code", skuCode,
+                .body(Map.of("skuCode", skuCode,
                             "message", "sku was created successfully"));
     }
 

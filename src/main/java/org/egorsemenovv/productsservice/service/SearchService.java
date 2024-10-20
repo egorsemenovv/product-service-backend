@@ -2,6 +2,7 @@ package org.egorsemenovv.productsservice.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Operator;
 import co.elastic.clients.elasticsearch._types.query_dsl.TextQueryType;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -31,7 +32,9 @@ public class SearchService {
             MultiMatchQuery multiMatchQuery = MultiMatchQuery.of(fn -> fn
                     .fields(List.of("name^3", "description^2", "color", "code"))
                     .query(keyword)
-                    .type(TextQueryType.BestFields));
+                    .type(TextQueryType.BestFields)
+                    .operator(Operator.And)
+                    .fuzziness("auto"));
             SearchRequest searchRequest = SearchRequest.of(fn -> fn
                     .index(indexName)
                     .query(q -> q.multiMatch(multiMatchQuery)));
