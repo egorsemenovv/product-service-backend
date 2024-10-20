@@ -6,7 +6,7 @@ volumes:
 
 services:
   postgresql:
-    image: postgres:latest
+    image: postgres:16.4
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
